@@ -122,7 +122,7 @@ public class WeatherEngine {
      * @return
      */
     public boolean setToCache(WeatherInfo weatherInfo) {
-        //mWeatherInfo = weatherInfo;
+        cleanCache();
         return flushCache(encodeWeatherInfo(weatherInfo));
     }
     

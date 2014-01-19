@@ -16,15 +16,24 @@
 
 package com.magicmod.mmweather.engine;
 
+import android.R.dimen;
 import android.R.integer;
+import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.content.Context;
+import android.content.Loader.ForceLoadContentObserver;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.magicmod.mmweather.R;
 import com.magicmod.mmweather.engine.WeatherInfo.DayForecast;
 import com.magicmod.mmweather.utils.Constants;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class YahooWeatherResProvider implements WeatherResProvider{
     private static final String TAG = "YahooWeatherResProvider";
@@ -52,15 +61,28 @@ public class YahooWeatherResProvider implements WeatherResProvider{
     }
 
     @Override
-    public DayForecast getPreFixedWeatherInfo(Context context, DayForecast forecast) {
+    public DayForecast getPreFixedWeatherInfo(Context context, final DayForecast forecast) {
         if (forecast == null) {
             return null;
         }
-        forecast.setHumidity(forecast.getHumidity() + "%");
-        forecast.setTemperature(forecast.getTemperature() + "\u00b0" + forecast.getTempUnit());
-        forecast.setTempHigh(forecast.getTempHigh() + "\u00b0" + forecast.getTempUnit());
-        forecast.setTempLow(forecast.getTempLow() + "\u00b0" + forecast.getTempUnit());
-        forecast.setWindSpeed(forecast.getWindSpeed() + forecast.getWindSpeedUnit());
+        DayForecast day = new DayForecast();
+        day.setHumidity(forecast.getHumidity() + "%");
+        day.setTemperature(forecast.getTemperature() + "\u00b0" + forecast.getTempUnit());
+        day.setTempHigh(forecast.getTempHigh() + "\u00b0" + forecast.getTempUnit());
+        day.setTempLow(forecast.getTempLow() + "\u00b0" + forecast.getTempUnit());
+        day.setWindSpeed(forecast.getWindSpeed() + forecast.getWindSpeedUnit());
+        day.setAQIData(forecast.getAQIData());
+        day.setCity(forecast.getCity());
+        //day.setCondition(forecast.getCondition());
+        day.setCondition(getCondition(context, forecast.getConditionCode(), forecast.getCondition()));
+        day.setConditionCode(forecast.getConditionCode());
+        day.setDate(forecast.getDate());
+        day.setPM2Dot5Data(forecast.getPM2Dot5Data());
+        day.setSunRaise(forecast.getSunRise());
+        day.setSunSet(forecast.getSunSet());
+        day.setSynctimestamp(forecast.getSynctimestamp());
+        day.setTempUnit(forecast.getTempUnit());
+        day.setWindSpeedUnit(forecast.getWindSpeedUnit());
         
         String windDirec = forecast.getWindDirection();
         if (!windDirec.equals(WeatherInfo.DATA_NULL)) {
@@ -77,18 +99,75 @@ public class YahooWeatherResProvider implements WeatherResProvider{
             else if (windDirection < 338) resId = R.string.weather_NW;
             else resId = R.string.weather_N;
             windDirec = context.getString(resId);
-            forecast.setWindDirection(windDirec);
+            day.setWindDirection(windDirec);
             
         }
+        return day;
+    }
+
+    @Override
+    public DayForecast getPreFixedWeatherInfo(final DayForecast forecast) {
+        // TODO Auto-generated method stub
         return forecast;
     }
 
     @Override
-    public DayForecast getPreFixedWeatherInfo(DayForecast forecast) {
-        // TODO Auto-generated method stub
-        return forecast;
+    public String getYear(final DayForecast forecast) {
+        String s[] = forecast.getDate().split(" ");
+        return s[2];
+    }
+
+    @Override
+    public String getMonth(final DayForecast forecast) {
+        String s[] = forecast.getDate().split(" ");
+        return s[1];
+    }
+
+    @Override
+    public String getDay(final DayForecast forecast) {
+        String s[] = forecast.getDate().split(" ");
+        return s[0];
+    }
+
+    @Override
+    public String getWeek(final DayForecast forecast, Context context) {
+        Calendar c = null;
+        c = Calendar.getInstance(Locale.CHINESE);
+        String s[] = forecast.getDate().split(" ");
+        String date = String.format("%s/%s/%s", s[0], monthToNum(s[1]), s[2]);
+        int dayForWeek = 0;
+        try {
+            c.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(date));
+            dayForWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
+            //dayForWeek = c.get(Calendar.DAY_OF_WEEK) -1;
+            Log.d(TAG, "Day for week is " + String.valueOf(dayForWeek));
+            
+        } catch (ParseException e) {
+            Log.e(TAG, "formate data string error, will return the origin data string");
+            e.printStackTrace();
+            return forecast.getDate();
+        }
+        Resources res = context.getResources();
+        return res.getStringArray(R.array.week_entries)[dayForWeek];
     }
     
+    private String monthToNum(String month) {
+        String m[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        String n[] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"};
+        for (int i=0; i<m.length; i++) {
+            if (month.equals(m[i])) {
+                return n[i];
+            }
+        }
+        return month;
+    }
     
-
+    private static String getCondition(Context context, String conditionCode, String condition) {
+        final Resources res = context.getResources();
+        final int resId = res.getIdentifier("weather_" + conditionCode, "string", context.getPackageName());
+        if (resId != 0) {
+            return res.getString(resId);
+        }
+        return condition;
+    }
 }

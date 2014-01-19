@@ -38,6 +38,13 @@ public class WeatherInfo {
         this.forecasts = forecasts;
     }
 
+    /**
+     * 2014年1月19日
+     * 
+     * the ArrayList should be ordered by weather date
+     * 
+     * @return
+     */
     public ArrayList<DayForecast> getDayForecast() {
         return forecasts;
     }

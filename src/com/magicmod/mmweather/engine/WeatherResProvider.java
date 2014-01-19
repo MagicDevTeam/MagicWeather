@@ -21,6 +21,8 @@ import android.graphics.Bitmap;
 
 import com.magicmod.mmweather.engine.WeatherInfo.DayForecast;
 
+import java.util.Locale;
+
 /**
  * 抽象类,继承此类以便得到一个修改过的DayForecast数据集
  * 
@@ -56,15 +58,19 @@ public interface WeatherResProvider {
      * 2014年1月12日
      * @param context
      * @param DayForecast DayForecast
-     * @return pre-fixed weather info
+     * @return pre-fixed DayForecast
      */
     DayForecast getPreFixedWeatherInfo(Context context, DayForecast forecast);
     
     /**
      * 2014年1月12日
      * @param DayForecast DayForecast
-     * @return pre-fixed weather info
+     * @return pre-fixed DayForecast
      */
-    DayForecast getPreFixedWeatherInfo(DayForecast forecast);
-
+    DayForecast getPreFixedWeatherInfo(final DayForecast forecast);
+    
+    String getYear(final DayForecast forecast);
+    String getMonth(final DayForecast forecast);
+    String getDay(final DayForecast forecast);
+    String getWeek(final DayForecast forecast, Context context);
 }

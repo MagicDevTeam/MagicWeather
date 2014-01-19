@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">MagicWeather</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="weather_source_yahoo">Yahoo! 天气</string>
+
+    <!-- Weather - Wind directions -->
+    <string name="weather_N">北风</string>
+    <string name="weather_NE">东北风</string>
+    <string name="weather_E">东风</string>
+    <string name="weather_SE">东南风</string>
+    <string name="weather_S">南风</string>
+    <string name="weather_SW">西南风</string>
+    <string name="weather_W">西风</string>
+    <string name="weather_NW">西北风</string>
+
+    <string name="press_again_exit">再按一次退出应用</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="weather_progress_title">正在验证位置</string>
+    <string name="weather_retrieve_location_dialog_title">无法查询位置!</string>
+    <string name="weather_select_location">选择位置</string>
+    <string name="weather_custom_location_dialog_title">请输入城市名称</string>
+    <string name="weather_sync_time">同步时间:%s</string>
+    <string name="weather_humidity">湿度:%s</string>
+
+    <string name="weather_0">龙卷风</string>
+    <string name="weather_1">热带风暴</string>
+    <string name="weather_2">飓风</string>
+    <string name="weather_3">强雷暴</string>
+    <string name="weather_4">雷暴</string>
+    <string name="weather_5">雨夹雪</string>
+    <string name="weather_6">混合雨和冻雨</string>
+    <string name="weather_7">混合雪和冻雨</string>
+    <string name="weather_8">冻毛毛雨</string>
+    <string name="weather_9">毛毛雨</string>
+    <string name="weather_10">冰雨</string>
+    <string name="weather_11">阵雨</string>
+    <string name="weather_12">阵雨</string>
+    <string name="weather_13">飘雪</string>
+    <string name="weather_14">小雪</string>
+    <string name="weather_15">吹雪</string>
+    <string name="weather_16">雪</string>
+    <string name="weather_17">冰雹</string>
+    <string name="weather_18">冻雨</string>
+    <string name="weather_19">沙尘</string>
+    <string name="weather_20">多雾</string>
+    <string name="weather_21">阴霾</string>
+    <string name="weather_22">烟雾</string>
+    <string name="weather_23">强风</string>
+    <string name="weather_24">大风</string>
+    <string name="weather_25">冷</string>
+    <string name="weather_26">多云</string>
+    <string name="weather_27">大部多云</string>
+    <string name="weather_28">大部多云</string>
+    <string name="weather_29">局部多云</string>
+    <string name="weather_30">局部多云</string>
+    <string name="weather_31">晴天</string>
+    <string name="weather_32">晴天</string>
+    <string name="weather_33">晴天积云</string>
+    <string name="weather_34">晴天积云</string>
+    <string name="weather_35">雨夹冰雹</string>
+    <string name="weather_36">热</string>
+    <string name="weather_37">局部雷暴雨</string>
+    <string name="weather_38">局部雷雨</string>
+    <string name="weather_39">局部雷雨</string>
+    <string name="weather_40">零星阵雨</string>
+    <string name="weather_41">大雪</string>
+    <string name="weather_42">零星阵雪</string>
+    <string name="weather_43">大雪</string>
+    <string name="weather_44">晴间多云</string>
+    <string name="weather_45">雷阵雨</string>
+    <string name="weather_46">阵雪</string>
+    <string name="weather_47">局部雷阵雨</string>
+</resources>

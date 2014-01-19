@@ -17,11 +17,14 @@
 package com.magicmod.mmweather.utils;
 
 public class Constants {
-    public static final boolean DEBUG = false;
+    public static final boolean DEBUG = true;
 
     public static final String PREF_NAME = "MagicWeather";
     
     
     public static final String WEATHER_ICONS = "weather_icons";
     public static final String MONOCHROME = "mono";
+    public static final String USE_METRIC = "metric";
+    public static final String CITY_ID = "city_id";
+    public static final String COUNTRY_NAME = "country_name";
 }

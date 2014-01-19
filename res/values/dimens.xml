@@ -3,5 +3,33 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="weather_current_city_name">22.0sp</dimen>
+    <dimen name="mm_weather_padding">10.0dip</dimen>
+    <dimen name="mm_plugin_weather_selectcity_indicator_textsize">12.0sp</dimen>
+    <dimen name="mm_plugin_weather_temperature_textsize">30.0sp</dimen>
+    <dimen name="mm_plugin_weather_climate_textsize">20.0sp</dimen>
 
+    <!-- CirclePageIndicator start -->
+    <integer name="default_circle_indicator_orientation">0</integer>
+    <!-- 未选中时周围圈的宽度 -->
+    <dimen name="default_circle_indicator_stroke_width">0.5dip</dimen>
+    <!-- 圆点的半径大小 -->
+    <dimen name="default_circle_indicator_radius">2.5dip</dimen>
+    <!-- 是否居中显示 -->
+    <bool name="default_circle_indicator_centered">true</bool>
+    <!-- 选择false时会有滑动动画 -->
+    <bool name="default_circle_indicator_snap">false</bool>
+
+    <!-- CirclePageIndicator end -->
+
+
+    <dimen name="mm_weather_pager_height">165.0dip</dimen>
+    <dimen name="mm_plugin_weather_paddingLeftAndRight">10.0dip</dimen>
+
+        <dimen name="mm_plugin_weather_otherday_small_textsize">14.0sp</dimen>
+    <dimen name="mm_plugin_weather_otherday_image_size">60.0dip</dimen>	
+    <dimen name="mm_plugin_weather_otherday_temperature_textsize">15.0sp</dimen>	
+    <dimen name="mm_plugin_weather_otherday_climate_textsize">13.0sp</dimen>
+
+    
 </resources>

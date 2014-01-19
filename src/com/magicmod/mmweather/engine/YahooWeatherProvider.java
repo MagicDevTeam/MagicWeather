@@ -38,6 +38,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -318,7 +320,7 @@ public class YahooWeatherProvider implements WeatherProvider {
                 }
                 ArrayList<DayForecast> forecasts = new ArrayList<WeatherInfo.DayForecast>();
 
-                long time = System.currentTimeMillis();
+                String time = new SimpleDateFormat("yyyy/MM/dd HH:mm").format(new java.util.Date());
                 for (DayForecast forecast : handler.forecasts) {
                     if (forecast.getDate().equals(handler.date)) {
                         forecast.setCondition(handler.condition);
@@ -335,7 +337,7 @@ public class YahooWeatherProvider implements WeatherProvider {
                     if (localizedCityName != null) {
                         forecast.setCity(localizedCityName);
                     }
-                    forecast.setSynctimestamp(String.valueOf(time));
+                    forecast.setSynctimestamp(time);
                     forecasts.add(forecast);
                 }
                 mWeatherInfo = new WeatherInfo(forecasts);
