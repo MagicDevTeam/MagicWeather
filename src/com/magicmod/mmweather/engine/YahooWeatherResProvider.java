@@ -139,9 +139,6 @@ public class YahooWeatherResProvider implements WeatherResProvider{
         try {
             c.setTime(new SimpleDateFormat("dd/MM/yyyy").parse(date));
             dayForWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
-            //dayForWeek = c.get(Calendar.DAY_OF_WEEK) -1;
-            Log.d(TAG, "Day for week is " + String.valueOf(dayForWeek));
-            
         } catch (ParseException e) {
             Log.e(TAG, "formate data string error, will return the origin data string");
             e.printStackTrace();

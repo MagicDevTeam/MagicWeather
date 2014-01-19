@@ -28,8 +28,6 @@ import com.magicmod.mmweather.engine.WeatherResProvider;
 import com.magicmod.mmweather.engine.WeatherInfo.DayForecast;
 import com.magicmod.mmweather.engine.WeatherProvider.LocationResult;
 import com.magicmod.mmweather.utils.Constants;
-import com.magicmod.mmweather.utils.widget.CityInputDialog;
-import com.magicmod.mmweather.utils.widget.CityInputDialog.onCitySelectListener;
 import com.magicmod.mmweather.utils.widget.RotateImageView;
 import com.magicmod.mmweather.utils.widget.CirclePageIndicator;
 
@@ -66,9 +64,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
     private NextDaysWeatherPagerAdapter mWeatherPagerAdapter;
     
     WeatherEngine mWeatherEngine;
-    //WeatherProvider mWeatherProvider;
-    
-    
+
     private Context mContext;
     
     @Override
@@ -120,16 +116,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         mWeatherImageView = (ImageView) findViewById(R.id.weather_img);
         mAqiImageView = (ImageView) findViewById(R.id.pm2_5_img);
         mAqiImageView.setOnClickListener(this);
-        
-        /*fragments = new ArrayList<Fragment>();
-        fragments.add(new NextDaysFirstWeatherFragment(mContext, null, null));
-        fragments.add(new NextDaysSecondWeatherFragment());
-        mViewPager = (ViewPager) findViewById(R.id.viewpager);
-        mWeatherPagerAdapter = new NextDaysWeatherPagerAdapter(
-                getSupportFragmentManager(), fragments);
-        mViewPager.setAdapter(mWeatherPagerAdapter);
-        ((CirclePageIndicator) findViewById(R.id.indicator))
-                .setViewPager(mViewPager);*/
     }
 
     /**
@@ -167,9 +153,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         if (weatherInfo == null) {
             return;
         }
-        
-        Log.d(TAG, "==== update weather view");
-        
+
         WeatherProvider provider = mWeatherEngine.getWeatherProvider();
         WeatherResProvider res = provider.getWeatherResProvider();
         
