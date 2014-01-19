@@ -21,6 +21,7 @@ public class Constants {
 
     public static final String PREF_NAME = "MagicWeather";
     
+    public static final long OUTDATED_LOCATION_THRESHOLD_MILLIS = 10L * 60L * 1000L; // 10 minutes
     
     public static final String WEATHER_ICONS = "weather_icons";
     public static final String MONOCHROME = "mono";

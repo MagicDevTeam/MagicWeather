@@ -1,9 +1,10 @@
 
 package com.magicmod.mmweather;
 
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -217,6 +218,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
             case R.id.title_location:
                 if (DBG)
                     Log.d(TAG, "click auto location ");
+                updateByGeoLocation();
                 break;
             case R.id.title_share:
                 if (DBG)
@@ -242,6 +244,29 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         }
 
     }
+    private void updateByGeoLocation() {
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Location location = lm.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        Log.d(TAG, "Current location is " + location);
+        boolean needsUpdate = location == null;
+        if (location == null) {
+            Toast.makeText(mContext, mContext.getString(R.string.geo_location_fail_info),
+                    Toast.LENGTH_LONG).show();
+        }
+        if (location != null) {
+            long delta = System.currentTimeMillis() - location.getTime();
+            needsUpdate = delta > Constants.OUTDATED_LOCATION_THRESHOLD_MILLIS;
+        }
+        if (needsUpdate) {
+            // TODO: use a better way to get location
+
+        }
+
+        if (location != null) {
+            new WeatherUpdateTask(location, Preferences.isMetric(mContext)).execute();
+        }
+    }
+
     /**
      * Open a city input view
      * 
@@ -300,7 +325,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         result.id = Preferences.getCityID(mContext);
         result.city = mTitleCityName.getText().toString();
         result.country = Preferences.getCountryName(mContext);
-        new WeatherUpdateTask(mContext, result, Preferences.isMetric(mContext)).execute();
+        new WeatherUpdateTask(result, Preferences.isMetric(mContext)).execute();
     }
     private void showShareMenu() {
         // TODO Auto-generated method stub
@@ -435,7 +460,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         }
 
         private void applyLocation(final LocationResult result) {
-            new WeatherUpdateTask(mContext, result, Preferences.isMetric(MainActivity.this.mContext)).execute();
+            new WeatherUpdateTask(result, Preferences.isMetric(MainActivity.this.mContext)).execute();
         }
     }
     
@@ -448,15 +473,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
      *
      */
     private class WeatherUpdateTask extends AsyncTask<Void, Void, WeatherInfo> {
-        private Context mContext;
         private LocationResult mLocationResult;
+        private Location mLocation;
         private boolean mIsMeric;
 
-        public WeatherUpdateTask(Context context, LocationResult result, boolean isMeric) {
-            this.mContext = context;
+        public WeatherUpdateTask(LocationResult result, boolean isMeric) {
             this.mLocationResult = result;
             this.mIsMeric = isMeric;
             
+        }
+        
+        public WeatherUpdateTask(Location location, boolean isMeric) {
+            this.mLocation = location;
+            this.mIsMeric = mIsMeric;
         }
 
         @Override
@@ -467,7 +496,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
 
         @Override
         protected WeatherInfo doInBackground(Void... params) {
-            WeatherInfo info = mWeatherEngine.getWeatherProvider().getWeatherInfo(mLocationResult.id, mLocationResult.city, mIsMeric);
+            WeatherInfo info = null;
+            if (mLocationResult != null) {
+                info = mWeatherEngine.getWeatherProvider().getWeatherInfo(mLocationResult.id,
+                        mLocationResult.city, mIsMeric);
+            } else if (mLocation != null) {
+                info = mWeatherEngine.getWeatherProvider().getWeatherInfo(mLocation, mIsMeric);
+            }
             if (info != null) {
                 mWeatherEngine.setToCache(info);
                 Preferences.setCityID(MainActivity.this.mContext, mLocationResult.id);

@@ -17,6 +17,7 @@
     <string name="weather_NW">NW</string>
     
     <string name="press_again_exit">Press again to exit app</string>
+    <string name="geo_location_fail_info">Can\'t find location, please choose city manual.</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="weather_progress_title">Verifying location</string>
