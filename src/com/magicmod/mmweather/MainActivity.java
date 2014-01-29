@@ -20,6 +20,10 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
 import com.magicmod.mmweather.config.Preferences;
 import com.magicmod.mmweather.engine.WeatherEngine;
@@ -29,9 +33,10 @@ import com.magicmod.mmweather.engine.WeatherResProvider;
 import com.magicmod.mmweather.engine.WeatherInfo.DayForecast;
 import com.magicmod.mmweather.engine.WeatherProvider.LocationResult;
 import com.magicmod.mmweather.utils.Constants;
+import com.magicmod.mmweather.utils.ImageUtils;
 import com.magicmod.mmweather.utils.widget.RotateImageView;
 import com.magicmod.mmweather.utils.widget.CirclePageIndicator;
-
+import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -64,23 +69,27 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
     private List<Fragment> fragments;
     private NextDaysWeatherPagerAdapter mWeatherPagerAdapter;
     
-    WeatherEngine mWeatherEngine;
-
+    private WeatherEngine mWeatherEngine;
     private Context mContext;
+    //private WeatherApplication mApplication;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+ 
         mContext = getApplicationContext();
         
         setContentView(R.layout.activity_main);
         
-        mWeatherEngine = WeatherEngine.getinstance(mContext);
+        final WeatherApplication mApplication = (WeatherApplication) this.getApplication();
+        
+        mWeatherEngine = mApplication.getWeatherEngine();
         
         initViews();
         initWeatherData();
         initFragments();
+        /*Intent intent = new Intent(mContext, WeatherUpdateServices.class);
+        mContext.startService(intent);*/
    }
 
     @Override
@@ -103,7 +112,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         
         mCountryTextView = (TextView) findViewById(R.id.country);
         mCityTextView = (TextView) findViewById(R.id.city);
-        mWeatherSourceTextView = (TextView) findViewById(R.id.weather_source);
+        mWeatherSourceTextView = (TextView) findViewById(R.id.weather_source_view);
         mSyncTimeTextView = (TextView) findViewById(R.id.sync_time);
         mPm25TextView = (TextView) findViewById(R.id.pm_data);
         mAqiDataTextView = (TextView) findViewById(R.id.pm2_5_quality);
@@ -189,8 +198,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         mHumidityTextView.setText(s);
         mWeatherConditionTextView.setText(today.getCondition());
         mWindTextView.setText(today.getWindDirection() + " " + today.getWindSpeed());
-        mWeatherImageView.setImageResource(res.getWeatherIconResId(mContext, today.getConditionCode(), null));
-
+        //Drawable d = Drawable.c
+        final Resources resources = mContext.getResources();
+        Drawable d = resources.getDrawable(res.getWeatherIconResId(mContext, today.getConditionCode(), null));
+        d = ImageUtils.resize(mContext, d, 120);
+        //Bitmap b = res.getWeatherIconBitmap(mContext, today.getConditionCode(), null);
+        //mWeatherImageView.setImageResource(res.getWeatherIconResId(mContext, today.getConditionCode(), null));
+        mWeatherImageView.setImageDrawable(d);
     }
 
     /**
@@ -507,6 +521,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
                 mWeatherEngine.setToCache(info);
                 Preferences.setCityID(MainActivity.this.mContext, mLocationResult.id);
                 Preferences.setCountryName(MainActivity.this.mContext, mLocationResult.country);
+                Preferences.setCityName(MainActivity.this.mContext, mLocationResult.city);
             }
             return info;
         }

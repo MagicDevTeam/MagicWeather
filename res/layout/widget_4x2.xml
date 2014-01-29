@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widgetLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:clickable="true"
+    android:descendantFocusability="beforeDescendants"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/widget_root_left"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/weather_source_view"
+            android:layout_width="wrap_content"
+            android:layout_height="15dip"
+            android:text="weather_source" />
+
+        <TextView
+            android:id="@+id/hour_view"
+            android:layout_width="wrap_content"
+            android:layout_height="60dip"
+            android:text="Hour" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/city_view"
+                android:layout_width="wrap_content"
+                android:layout_height="30dip"
+                android:text="City" />
+
+            <TextView
+                android:id="@+id/today_temp"
+                android:layout_width="wrap_content"
+                android:layout_height="15dip"
+                android:text="today_temp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/data_view"
+            android:layout_width="wrap_content"
+            android:layout_height="20dip"
+            android:text="week_month" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/widget_root_right"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/weather_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/actionbar_background" />
+
+        <TextView
+            android:id="@+id/temp_low_hight"
+            android:layout_width="wrap_content"
+            android:layout_height="20dip"
+            android:text="temp_low__hight" />
+
+        <TextView
+            android:id="@+id/wind_view"
+            android:layout_width="wrap_content"
+            android:layout_height="20dip"
+            android:text="wind_view" />
+
+    </LinearLayout>
+
+</LinearLayout>

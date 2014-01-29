@@ -26,12 +26,59 @@ public class Preferences {
         return getPrefs(context).edit().putString(Constants.CITY_ID, id).commit();
     }
     
+    public static boolean setCityName(Context context, String name) {
+        return getPrefs(context).edit().putString(Constants.CITY_NAME, name).commit();
+    }
+    
+    public static String getCityName(Context context) {
+        return getPrefs(context).getString(Constants.CITY_NAME, "ShangHai");
+    }
+    
     public static String getCountryName(Context context) {
         return getPrefs(context).getString(Constants.COUNTRY_NAME, "ShangHai");
     }
     
     public static boolean setCountryName(Context context, String countyNameString) {
         return getPrefs(context).edit().putString(Constants.COUNTRY_NAME, countyNameString).commit();
+    }
+    
+    /**
+     * 2014年1月27日
+     * @param context
+     * @param interval 分钟数
+     * @return
+     */
+    public static boolean setWeatherRefreshInterval(Context context, int interval) {
+        return getPrefs(context).edit().putInt(Constants.WEATHER_REFRESH_INTERVAL, interval).commit();
+    }
+    
+    /**
+     * 2014年1月27日
+     * @param context
+     * @return 以毫秒为单位返回时间
+     */
+    public static long getWeatherRefreshIntervalInMs(Context context) {
+        String value = getPrefs(context).getString(Constants.WEATHER_REFRESH_INTERVAL, "30");
+        return Long.parseLong(value) * 60 * 1000;
+    }
+    
+    /**
+     * 2014年1月27日
+     * @param context
+     * @param time 当前的毫秒数(System.currentTimeMillis())
+     * @return
+     */
+    public static boolean setWeatherRefreshTimestamp(Context context, long time) {
+        return getPrefs(context).edit().putLong(Constants.WEATHER_REFRESH_TIMESTAMP, time).commit();
+    }
+    
+    /**
+     * 2014年1月27日
+     * @param context
+     * @return 返回存储的毫秒数
+     */
+    public static long getWeatherRefreshTimestamp(Context context) {
+        return getPrefs(context).getLong(Constants.WEATHER_REFRESH_TIMESTAMP, System.currentTimeMillis());
     }
 }
 

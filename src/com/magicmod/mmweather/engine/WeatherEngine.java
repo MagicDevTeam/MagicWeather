@@ -121,12 +121,12 @@ public class WeatherEngine {
      * @param weatherInfo
      * @return
      */
-    public boolean setToCache(WeatherInfo weatherInfo) {
+    public synchronized boolean setToCache(WeatherInfo weatherInfo) {
         cleanCache();
         return flushCache(encodeWeatherInfo(weatherInfo));
     }
     
-    public boolean cleanCache() {
+    public synchronized boolean cleanCache() {
         File file = new File(mCacheDir, CACHE_NAME);
         return file.delete();
     }
@@ -136,7 +136,7 @@ public class WeatherEngine {
      * 2014年1月14日
      * @return
      */
-    public WeatherInfo getCache() {
+    public synchronized WeatherInfo getCache() {
         File file = new File(mCacheDir, CACHE_NAME);
         if (!file.exists() || !file.isFile()) {
             return null;
@@ -194,7 +194,7 @@ public class WeatherEngine {
         return decodeWeatherInfo(buffer.toString());
     }
     
-    private boolean flushCache(String string) {
+    private synchronized boolean flushCache(String string) {
         DataOutputStream out = null;
         File file = null;
         try {

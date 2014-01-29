@@ -23,7 +23,11 @@ import android.content.Context;
 import android.content.Loader.ForceLoadContentObserver;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.renderscript.Element;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.magicmod.mmweather.R;
@@ -43,6 +47,8 @@ public class YahooWeatherResProvider implements WeatherResProvider{
     public int getWeatherIconResId(Context context, String conditionCode, String iconSet) {
         if (iconSet == null) {
             iconSet = "_";
+        } else {
+            iconSet = "_" + iconSet + "_";
         }
         final String iconName = "weather" + iconSet + conditionCode; 
         final Resources res = context.getResources();
@@ -56,8 +62,27 @@ public class YahooWeatherResProvider implements WeatherResProvider{
 
     @Override
     public Bitmap getWeatherIconBitmap(Context context, String conditionCode, String iconSet) {
-        // TODO Auto-generated method stub
-        return null;
+        if (iconSet == null) {
+            iconSet = "_";
+        } else {
+            iconSet = "_" + iconSet + "_";
+        }
+        final String iconName = "weather" + iconSet + conditionCode;
+        final Resources res = context.getResources();
+        final int resId = res.getIdentifier(iconName, "drawable", context.getPackageName());
+        
+        Drawable d = res.getDrawable(resId);
+        if (d instanceof BitmapDrawable) {
+            BitmapDrawable bd = (BitmapDrawable) d;
+            return bd.getBitmap();
+        }
+        
+        Bitmap b = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        d.setBounds(0, 0, b.getWidth(), b.getHeight());
+        d.draw(c);
+        c.setBitmap(null);
+        return b;
     }
 
     @Override

@@ -30,7 +30,7 @@
         android:textSize="@dimen/mm_plugin_weather_climate_textsize" />
 
     <TextView
-        android:id="@+id/weather_source"
+        android:id="@+id/weather_source_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/weather_source"
+        android:layout_below="@id/weather_source_view"
         android:layout_marginLeft="15.0dip"
         android:layout_marginTop="5dip"
         android:singleLine="true"

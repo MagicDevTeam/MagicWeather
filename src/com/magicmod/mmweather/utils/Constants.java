@@ -27,5 +27,8 @@ public class Constants {
     public static final String MONOCHROME = "mono";
     public static final String USE_METRIC = "metric";
     public static final String CITY_ID = "city_id";
+    public static final String CITY_NAME = "city_name";
     public static final String COUNTRY_NAME = "country_name";
+    public static final String WEATHER_REFRESH_INTERVAL = "weather_refresh_interval";
+    public static final String WEATHER_REFRESH_TIMESTAMP = "weather_refresh_timestamp";
 }
