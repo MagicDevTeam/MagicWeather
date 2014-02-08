@@ -13,7 +13,6 @@
         android:layout_alignParentTop="true"
         android:gravity="center"
         android:singleLine="true"
-        android:text="week"
         android:textColor="@android:color/white"
         android:textSize="@dimen/mm_plugin_weather_otherday_small_textsize" />
 
@@ -44,7 +43,6 @@
         android:marqueeRepeatLimit="marquee_forever"
         android:scrollHorizontally="true"
         android:singleLine="true"
-        android:text="temp"
         android:textColor="@android:color/white"
         android:textSize="@dimen/mm_plugin_weather_otherday_temperature_textsize" />
 
@@ -59,7 +57,6 @@
         android:gravity="center"
         android:marqueeRepeatLimit="marquee_forever"
         android:singleLine="true"
-        android:text="climate"
         android:textColor="@android:color/white"
         android:textSize="@dimen/mm_plugin_weather_otherday_climate_textsize" />
 
@@ -75,7 +72,6 @@
         android:marqueeRepeatLimit="marquee_forever"
         android:scrollHorizontally="true"
         android:singleLine="true"
-        android:text="wind"
         android:textColor="@android:color/white"
         android:textSize="@dimen/mm_plugin_weather_otherday_climate_textsize" />
 
