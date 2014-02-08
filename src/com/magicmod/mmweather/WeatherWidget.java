@@ -17,7 +17,7 @@ public class WeatherWidget extends AppWidgetProvider {
             int[] appWidgetIds) {// 每添加一个小插件调用一次，跟onDeleted对应
         super.onUpdate(context, appWidgetManager, appWidgetIds);
         
-        if (DBG) Log.i("WeatherWidget", "onUpdate");
+        if (DBG) Log.i(TAG, "onUpdate");
 
         Intent intent = new Intent(context, WeatherUpdateService.class);
         context.startService(intent);
@@ -25,14 +25,14 @@ public class WeatherWidget extends AppWidgetProvider {
 
     @Override
     public void onEnabled(Context context) {// 第一个小插件添加时调用，跟onDisabled对应
-        if (DBG) Log.i("WeatherWidget", "onEnabled");
+        if (DBG) Log.i(TAG, "onEnabled");
         super.onEnabled(context);
     }
 
     @Override
     public void onDisabled(Context context) {// 最后一个小插件删除时会调用
         super.onDisabled(context);
-        if (DBG) Log.i("WeatherWidget", "onDisabled");
+        if (DBG) Log.i(TAG, "onDisabled");
         Intent intent = new Intent(context, WeatherUpdateService.class);
         context.stopService(intent);
     }
@@ -40,7 +40,7 @@ public class WeatherWidget extends AppWidgetProvider {
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {// 小插件每删除一个调用一次
         super.onDeleted(context, appWidgetIds);
-        if (DBG) Log.i("WeatherWidget", "onDeleted");
+        if (DBG) Log.i(TAG, "onDeleted");
     }
 
     @Override

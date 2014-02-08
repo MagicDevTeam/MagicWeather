@@ -35,9 +35,24 @@
             </intent-filter>
         </activity>
 
-        <service android:name="WeatherUpdateServices"
-            android:process=".mmweather">
+        <service android:name="com.magicmod.mmweather.WeatherUpdateService"
+            android:process="com.magicmod.mmweather.mmweather">
         </service>
+
+        <receiver
+            android:name="com.magicmod.mmweather.WeatherWidget"
+            android:label="@string/widget_4_2" >
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_4x2" />
+
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+                
     </application>
 
 </manifest>

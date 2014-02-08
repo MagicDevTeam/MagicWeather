@@ -12,7 +12,6 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="15.0dip"
         android:singleLine="true"
-        android:text="city"
         android:textColor="@android:color/white"
         android:textSize="40.0sp" />
 
@@ -25,7 +24,6 @@
         android:layout_marginLeft="15.0dip"
         android:layout_marginTop="5dip"
         android:singleLine="true"
-        android:text="weather_source"
         android:textColor="@android:color/white"
         android:textSize="@dimen/mm_plugin_weather_climate_textsize" />
 
@@ -38,7 +36,6 @@
         android:layout_marginLeft="15.0dip"
         android:layout_marginTop="5dip"
         android:singleLine="true"
-        android:text="weather_source"
         android:textColor="@android:color/white"
         android:textSize="7.0sp" />
 
@@ -51,7 +48,6 @@
         android:layout_marginLeft="15.0dip"
         android:layout_marginTop="5dip"
         android:singleLine="true"
-        android:text="sync_time"
         android:textColor="@android:color/white"
         android:textSize="7.0sp" />
 
@@ -84,7 +80,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:singleLine="true"
-                    android:text="AQI"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/mm_plugin_weather_selectcity_indicator_textsize" />
 
@@ -94,7 +89,6 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:singleLine="true"
-                    android:text="pm_data"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/mm_plugin_weather_temperature_textsize" />
             </LinearLayout>
@@ -113,7 +107,6 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:singleLine="true"
-            android:text="pm_quality"
             android:textColor="@android:color/white"
             android:textSize="@dimen/mm_plugin_weather_climate_textsize" />
     </LinearLayout>

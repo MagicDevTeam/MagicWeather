@@ -80,5 +80,13 @@ public class Preferences {
     public static long getWeatherRefreshTimestamp(Context context) {
         return getPrefs(context).getLong(Constants.WEATHER_REFRESH_TIMESTAMP, System.currentTimeMillis());
     }
+    
+    public static boolean setCalendar24HFormate(Context context, boolean b) {
+        return getPrefs(context).edit().putBoolean(Constants.CALENDAR_24H_FORMATE, b).commit();
+    }
+    
+    public static boolean getCalendar24HFormate(Context context) {
+        return getPrefs(context).getBoolean(Constants.CALENDAR_24H_FORMATE, true);
+    }
 }
 

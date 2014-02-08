@@ -13,4 +13,6 @@
     <!-- 未选中时周围圈的颜色 -->
     <color name="default_circle_indicator_stroke_color">#FF0000</color>
 
+    <color name="text_shadow">#dd000000</color>
+    <color name="text_shadow_opaque">#3f000000</color>
 </resources>

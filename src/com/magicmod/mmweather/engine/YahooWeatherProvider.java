@@ -39,6 +39,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Date;
+import java.text.RuleBasedCollator;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public class YahooWeatherProvider implements WeatherProvider {
     };
 
     private Context mContext;
-    private WeatherInfo mWeatherInfo;
+    //private WeatherInfo mWeatherInfo;
 
     private String mCityId, mLocalizedCityName;
     private Location mLocation;
@@ -130,7 +131,7 @@ public class YahooWeatherProvider implements WeatherProvider {
         return null;
     }
 
-    @Override
+    /*@Override
     public WeatherInfo getWeatherInfo(String id, String localizedCityName, boolean metric) {
         mCityId = id;
         mLocalizedCityName = localizedCityName;
@@ -139,7 +140,7 @@ public class YahooWeatherProvider implements WeatherProvider {
         refreshData(id, localizedCityName, metric);
 
         return mWeatherInfo;
-    }
+    }*/
 
     private static class WeatherHandler extends DefaultHandler {
         private static final String TAG = "YahooWeather:WeatherHandler";
@@ -187,7 +188,19 @@ public class YahooWeatherProvider implements WeatherProvider {
                 day.setCity(city);
                 day.setCondition(attributes.getValue("text"));
                 day.setConditionCode(attributes.getValue("code"));
-                day.setDate(attributes.getValue("date"));
+                //Fix yahoo date issue
+                //EG: <yweather:condition text="Clear" code="31" temp="-3" date="Sat, 08 Feb 2014 7:59 pm CST"/>
+                //<yweather:forecast day="Sat" date="8 Feb 2014" low="-12" high="1" text="Clear" code="31"/>
+                String data[] = attributes.getValue("date").trim().split(" ");
+                StringBuilder builder = new StringBuilder();
+                if (Integer.parseInt(data[0]) < 10) 
+                    builder.append("0");
+                builder.append(data[0]);
+                builder.append(" ");
+                builder.append(data[1]);
+                builder.append(" ");
+                builder.append(data[2]);
+                day.setDate(builder.toString());
                 day.setTempHigh(attributes.getValue("high"));
                 day.setTempLow(attributes.getValue("low"));
                 day.setTempUnit(temperatureUnit);
@@ -200,14 +213,14 @@ public class YahooWeatherProvider implements WeatherProvider {
         }
     }
 
-    @Override
+    /*@Override
     public WeatherInfo getWeatherInfo(Location location, boolean metric) {
         mLocation = location;
         mMetricUnits = metric;
         
         refreshData(location, metric);
         return mWeatherInfo;
-    }
+    }*/
 
     private LocationResult parsePlace(JSONObject place) throws JSONException {
         LocationResult result = new LocationResult();
@@ -270,14 +283,16 @@ public class YahooWeatherProvider implements WeatherProvider {
         return language + "-" + country;
     }
 
-    @Override
-    public WeatherInfo getWeatherInfo() {
-        // TODO Auto-generated method stub
+    //@Override
+    /*public WeatherInfo getWeatherInfo() {
+        if (mWeatherInfo == null) {
+            mWeatherInfo = new WeatherInfo(new ArrayList<WeatherInfo.DayForecast>());
+        }
         return mWeatherInfo;
-    }
+    }*/
 
-    @Override
-    public void refreshData() {
+    //@Override
+    /*public void refreshData() {
         // TODO Auto-generated method stub
         if (mCityId != null) {
             refreshData(mCityId, mLocalizedCityName, mMetricUnits);
@@ -287,21 +302,24 @@ public class YahooWeatherProvider implements WeatherProvider {
         
         if (mWeatherDataChangedListener != null)
             mWeatherDataChangedListener.onDataChanged();
-    }
+    }*/
 
     @Override
-    public void refreshData(String id, String localizedCityName, boolean metricUnits) {
+    public WeatherInfo getWeatherInfo(String id, String localizedCityName, boolean metricUnits) {
         mCityId = id;
         mLocalizedCityName = localizedCityName;
         mMetricUnits = metricUnits;
         
         String url = String.format(URL_WEATHER, id, metricUnits ? "c" : "f");
+        Log.d(TAG, "URL is => " + url);
         String response = HttpRetriever.retrieve(url);
 
         if (response == null) {
-            mWeatherInfo = null;
-            return;
+            //mWeatherInfo = null;
+            return null;
         }
+        
+        WeatherInfo info = null;
 
         SAXParserFactory factory = SAXParserFactory.newInstance();
         try {
@@ -339,29 +357,37 @@ public class YahooWeatherProvider implements WeatherProvider {
                     }
                     forecast.setSynctimestamp(time);
                     forecasts.add(forecast);
+                    
+                    //Log.d(TAG, "Weather forecast is => " + forecast);
                 }
-                mWeatherInfo = new WeatherInfo(forecasts);
-                Log.d(TAG, "Weather updated: " + mWeatherInfo);
+                //mWeatherInfo = new WeatherInfo(forecasts);
+                info = new WeatherInfo(forecasts);
+                Log.d(TAG, "Weather updated: " + info);
             } else {
                 Log.w(TAG, "Received incomplete weather XML (id=" + id + ")");
-                mWeatherInfo = null;
+                //mWeatherInfo = null;
+                info = null;
             }
         } catch (ParserConfigurationException e) {
             Log.e(TAG, "Could not create XML parser", e);
-            mWeatherInfo = null;
+            //mWeatherInfo = null;
+            info = null;
         } catch (SAXException e) {
             Log.e(TAG, "Could not parse weather XML (id=" + id + ")", e);
-            mWeatherInfo = null;
+            //mWeatherInfo = null;
+            info = null;
         } catch (IOException e) {
             Log.e(TAG, "Could not parse weather XML (id=" + id + ")", e);
-            mWeatherInfo = null;
+            //mWeatherInfo = null;
+            info = null;
         }
         if (mWeatherDataChangedListener != null)
             mWeatherDataChangedListener.onDataChanged();
+        return info;
     }
 
     @Override
-    public void refreshData(Location location, boolean metricUnits) {
+    public WeatherInfo getWeatherInfo(Location location, boolean metricUnits) {
         mLocation = location;
         mMetricUnits = metricUnits;
         
@@ -371,10 +397,10 @@ public class YahooWeatherProvider implements WeatherProvider {
         String url = URL_PLACEFINDER + Uri.encode(params);
         JSONObject results = fetchResults(url);
         if (results == null) {
-            mWeatherInfo = null;
-            return;
+            return null;
         }
-
+        
+        WeatherInfo info = null;
         try {
             JSONObject result = results.getJSONObject("Result");
             String woeid = result.getString("woeid");
@@ -391,14 +417,15 @@ public class YahooWeatherProvider implements WeatherProvider {
 
             Log.d(TAG, "Resolved location " + location + " to " + city + " (" + woeid + ")");
 
-            mWeatherInfo = getWeatherInfo(woeid, city, metricUnits);
+            info = getWeatherInfo(woeid, city, metricUnits);
         } catch (JSONException e) {
             Log.e(TAG, "Received malformed placefinder data (location="
                     + location + ", lang=" + language + ")", e);
-            mWeatherInfo = null;
+            info = null;
         }
         if (mWeatherDataChangedListener != null)
             mWeatherDataChangedListener.onDataChanged();
+        return info;
     }
 
     @Override

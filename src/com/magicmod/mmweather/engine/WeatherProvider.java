@@ -68,11 +68,11 @@ public interface WeatherProvider {
      * 2014年1月12日
      * @return
      */
-    WeatherInfo getWeatherInfo();
+    //WeatherInfo getWeatherInfo();
     
-    void refreshData();
-    void refreshData(String id, String localizedCityName, boolean metricUnits);
-    void refreshData(Location location, boolean metricUnits);
+    //void refreshData();
+    //void refreshData(String id, String localizedCityName, boolean metricUnits);
+    //void refreshData(Location location, boolean metricUnits);
 
     int getNameResourceId();
     

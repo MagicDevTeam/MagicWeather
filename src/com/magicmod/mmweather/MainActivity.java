@@ -201,7 +201,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         //Drawable d = Drawable.c
         final Resources resources = mContext.getResources();
         Drawable d = resources.getDrawable(res.getWeatherIconResId(mContext, today.getConditionCode(), null));
-        d = ImageUtils.resize(mContext, d, 120);
+        d = ImageUtils.resizeDrawable(mContext, d, 120);
         //Bitmap b = res.getWeatherIconBitmap(mContext, today.getConditionCode(), null);
         //mWeatherImageView.setImageResource(res.getWeatherIconResId(mContext, today.getConditionCode(), null));
         mWeatherImageView.setImageDrawable(d);
@@ -337,7 +337,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
     private void updateWeatherInfo() {
         LocationResult result = new LocationResult();
         result.id = Preferences.getCityID(mContext);
-        result.city = mTitleCityName.getText().toString();
+        result.city = Preferences.getCityName(mContext);//mTitleCityName.getText().toString();
         result.country = Preferences.getCountryName(mContext);
         new WeatherUpdateTask(result, Preferences.isMetric(mContext)).execute();
     }
@@ -530,6 +530,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         protected void onPostExecute(WeatherInfo info) {
             super.onPostExecute(info);
             mUpdateProgressBar.stopAnim();
+            //sendBroadcast(new Intent(WeatherUpdateService.ACTION_FORCE_UPDATE));
             updateWeatherView(info,true);
         }
     }

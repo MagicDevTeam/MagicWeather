@@ -5,6 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="weather_source_yahoo">Yahoo! Weather</string>
+    <string name="widget_4_2">widget_4_2</string>
 
     <!-- Weather - Wind directions -->
     <string name="weather_N">N</string>

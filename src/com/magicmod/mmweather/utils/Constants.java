@@ -31,4 +31,5 @@ public class Constants {
     public static final String COUNTRY_NAME = "country_name";
     public static final String WEATHER_REFRESH_INTERVAL = "weather_refresh_interval";
     public static final String WEATHER_REFRESH_TIMESTAMP = "weather_refresh_timestamp";
+    public static final String CALENDAR_24H_FORMATE = "calendar_24h_formate";
 }
