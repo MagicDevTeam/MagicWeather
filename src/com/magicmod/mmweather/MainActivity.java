@@ -530,7 +530,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         protected void onPostExecute(WeatherInfo info) {
             super.onPostExecute(info);
             mUpdateProgressBar.stopAnim();
-            //sendBroadcast(new Intent(WeatherUpdateService.ACTION_FORCE_UPDATE));
+            sendBroadcast(new Intent(WeatherUpdateService.ACTION_FORCE_UPDATE));
             updateWeatherView(info,true);
         }
     }
