@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="weather_settings"
+    android:title="@string/weather_category" >
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="weather_use_metric"
+        android:title="@string/weather_use_metric" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="weather_use_24h"
+        android:title="@string/weather_use_24h" />
+
+    <ListPreference
+        android:defaultValue="60"
+        android:entries="@array/weather_interval_entries"
+        android:entryValues="@array/weather_interval_values"
+        android:key="weather_refresh_interval"
+        android:summary="%s"
+        android:title="@string/weather_refresh_interval" />
+
+        <Preference
+            android:key="application_version" />
+</PreferenceScreen>

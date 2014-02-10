@@ -5,6 +5,20 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="weather_source_yahoo">Yahoo! 天气</string>
+    <string name="widget_4_2">MagicMod天气</string>
+    <string name="weather_category">天气设置</string>
+    <string name="weather_use_24h">使用24小时制</string>
+    <string name="weather_refresh_interval">更新频率</string>
+    <string name="weather_use_metric">使用公制单位</string>
+
+    <!-- Weather - Update frequency -->
+    <string name="weather_refresh_manual">手动</string>
+    <string name="weather_refresh_30min">30 分</string>
+    <string name="weather_refresh_60min">60 分</string>
+    <string name="weather_refresh_2hrs">2 小时</string>
+    <string name="weather_refresh_4hrs">4 小时</string>
+    <string name="weather_refresh_6hrs">6 小时</string>
+    <string name="weather_refresh_8hrs">8 小时</string>
 
     <!-- Weather - Wind directions -->
     <string name="weather_N">北风</string>
@@ -17,6 +31,7 @@
     <string name="weather_NW">西北风</string>
 
     <string name="press_again_exit">再按一次退出应用</string>
+    <string name="geo_location_fail_info">无法找到城市,请手动选择.</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="weather_progress_title">正在验证位置</string>
@@ -74,4 +89,12 @@
     <string name="weather_45">雷阵雨</string>
     <string name="weather_46">阵雪</string>
     <string name="weather_47">局部雷阵雨</string>
+    
+    <string name="sunday">星期天</string>
+    <string name="monday">星期一</string>
+    <string name="tuesday">星期二</string>
+    <string name="wednesday">星期三</string>
+    <string name="tursday">星期四</string>
+    <string name="friday">星期五</string>
+    <string name="saturday">星期六</string>
 </resources>

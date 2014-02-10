@@ -12,6 +12,9 @@ public class WeatherWidget extends AppWidgetProvider {
     private static final String TAG = "WeatherWidget";
     private static final boolean DBG = Constants.DEBUG;
     
+    public static final String ACTION_WIDGET_ICON_HOTAREA = "WidgetWeatherIcon";
+    //public static final String ACTION_WIDGET_TIME_HOTAREA = "WidgetTime";
+    
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager,
             int[] appWidgetIds) {// 每添加一个小插件调用一次，跟onDeleted对应
@@ -55,7 +58,17 @@ public class WeatherWidget extends AppWidgetProvider {
             context.startService(new Intent(context, WeatherUpdateService.class));
         } else if (action.equals("android.intent.action.BOOT_COMPLETED")) {
             context.startService(new Intent(context, WeatherUpdateService.class));
-        }/*else if (action.equals(TEXTINFO_LEFT_HOTAREA_ACTION)){
+        } else if (action.equals(ACTION_WIDGET_ICON_HOTAREA)) {
+            Intent i = new Intent(context, MainActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);            
+        } /*else if (action.equals(ACTION_WIDGET_TIME_HOTAREA)) {
+            Intent i = new Intent("android.intent.action.SET_ALARM");
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+        }*/
+        
+        /*else if (action.equals(TEXTINFO_LEFT_HOTAREA_ACTION)){
             L.i("widget get weather action.........");
             Intent updateIntent = new Intent(context, WeatherUpdateService.class);
             updateIntent.setAction(TEXTINFO_LEFT_HOTAREA_ACTION);

@@ -2,6 +2,7 @@ package com.magicmod.mmweather;
 
 import android.R.integer;
 import android.app.KeyguardManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
@@ -52,9 +53,6 @@ public class WeatherUpdateService extends Service {
     private WeatherUpdateTask mTask;
     //private WeatherEngine mWeatherEngine;
     
-    /*private TextView mWeatherSourceView, mHourView, mCityView, mTodayTempView, mDataView;
-    private TextView mTempLowHightView, mWindView;
-    private ImageView mWeatherIcon;*/
     private RemoteViews mWidgetViews;
     
     //private boolean FirstFlag = true;
@@ -90,29 +88,28 @@ public class WeatherUpdateService extends Service {
                     Context.POWER_SERVICE);
             boolean isScreenON = pm.isScreenOn();
             if (isScreenON) {
-                /*if (FirstFlag) {
-                    updateWeatherView();
-                    FirstFlag = !FirstFlag;
-                } else */if (action.equals(ACTION_FORCE_UPDATE)) {
+                if (action.equals(ACTION_FORCE_UPDATE)) {
                     updateWeatherView();
                 } else if (action.equals(ACTION_UPDATE_FINISHED)
                         && !intent.getBooleanExtra(EXTRA_UPDATE_CANCELLED, false)) {
                     updateWeatherView();
                 } else {
                     long now = System.currentTimeMillis();
-                    long start = mLastRefreshTimestamp
-                            + Preferences.getWeatherRefreshIntervalInMs(WeatherUpdateService.this);
+                    long due = Preferences.getWeatherRefreshIntervalInMs(WeatherUpdateService.this
+                            .getApplicationContext());
+                    long start = mLastRefreshTimestamp + due;
 
                     if (DBG)
                         Log.d(TAG, String.format(
                                 "now time is %d,  refresh target time should be %d", now, start));
 
-                    if (now >= start) {
+                    if (now >= start && due != 0) {
                         if (DBG)
                             Log.d(TAG, "Refresh weathr info due to at refresh time");
 
                         mLastRefreshTimestamp = now;
-                        Preferences.setWeatherRefreshTimestamp(WeatherUpdateService.this,
+                        Preferences.setWeatherRefreshTimestamp(
+                                WeatherUpdateService.this.getApplicationContext(),
                                 mLastRefreshTimestamp);
 
                         boolean active = mTask != null
@@ -137,8 +134,23 @@ public class WeatherUpdateService extends Service {
         super.onCreate();
 
         mWidgetViews = new RemoteViews(application.getPackageName(), R.layout.widget_4x2);// 实例化widget
+        
+        Intent icon = new Intent(application.getApplicationContext(), WeatherWidget.class);
+        icon.setAction(WeatherWidget.ACTION_WIDGET_ICON_HOTAREA);
+        PendingIntent iconArea = PendingIntent.getBroadcast(this, 1, icon, 1);
+        mWidgetViews.setOnClickPendingIntent(R.id.weather_icon, iconArea);
 
-        mLastRefreshTimestamp = Preferences.getWeatherRefreshTimestamp(this);
+        /*Intent clock = new Intent(application.getApplicationContext(), WeatherWidget.class);
+        clock.setAction(WeatherWidget.ACTION_WIDGET_TIME_HOTAREA);
+        PendingIntent clockArea = PendingIntent.getBroadcast(this, 1, clock, 1);
+        mWidgetViews.setOnClickPendingIntent(R.id.hour_view, clockArea);*/
+        final Intent calendarClickIntent = new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_APP_CALENDAR);
+        final PendingIntent calendarClickPendingIntent = PendingIntent.getActivity(this, 0,
+                calendarClickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mWidgetViews.setOnClickPendingIntent(R.id.data_view, calendarClickPendingIntent);
+
+        mLastRefreshTimestamp = Preferences.getWeatherRefreshTimestamp(this.getApplicationContext());
 
         registerReceiver(); // 注册相关的广播
     }
@@ -148,7 +160,8 @@ public class WeatherUpdateService extends Service {
         //SimpleDateFormat sdf = new new SimpleDateFormat("HHmm");
         Calendar ca = Calendar.getInstance(this.getResources().getSystem().getConfiguration().locale);
         StringBuilder builder = new StringBuilder();        
-        boolean is24h = Preferences.getCalendar24HFormate(getApplicationContext());
+        boolean is24h = Preferences.getCalendar24HFormate(this.getApplicationContext());
+        //Ugly code 
         if (is24h) {
             builder.append(ca.get(Calendar.HOUR_OF_DAY));
         } else {
@@ -160,8 +173,9 @@ public class WeatherUpdateService extends Service {
         int minute = ca.get(Calendar.MINUTE);
         if (minute < 10) builder.append("0");
         builder.append(minute);
-        if (!is24h) 
-            builder.append(ca.get(Calendar.AM_PM)==Calendar.AM ? "am" : "pm");
+        //Remove this, we'll use a stand view later
+        /*if (!is24h) 
+            builder.append(ca.get(Calendar.AM_PM)==Calendar.AM ? "am" : "pm");*/
 
         if (DBG) Log.d(TAG, "hour is " + builder.toString());
         
@@ -175,22 +189,33 @@ public class WeatherUpdateService extends Service {
 
     protected void updateWeatherView() {
         if (DBG) Log.d(TAG, "update weather view");
-        //mWidgetViews.setImageViewResource(R.id.weather_icon, R.drawable.weather_na);
-        WeatherApplication app = (WeatherApplication)this.getApplication();
-        WeatherEngine engine = app.getWeatherEngine();
-        WeatherInfo info = engine.getCache();
-        WeatherProvider provider = engine.getWeatherProvider();
-        WeatherResProvider res = engine.getWeatherProvider().getWeatherResProvider();
-        ArrayList<DayForecast> days = info.getDayForecast();//provider.getWeatherInfo().getDayForecast();
-        if (days.isEmpty()) {
+        WeatherProvider provider;
+        WeatherResProvider res;
+        ArrayList<DayForecast> days;
+        try {
+            WeatherApplication app = (WeatherApplication) this.getApplication();
+            WeatherEngine engine = app.getWeatherEngine();
+            WeatherInfo info = engine.getCache();
+            provider = engine.getWeatherProvider();
+            res = engine.getWeatherProvider().getWeatherResProvider();
+            days = info.getDayForecast();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (DBG) Log.d(TAG, "Can't get weather info, not refresh view");
+            return;            
+        }
+        /*if (days.isEmpty()) {
             if (DBG) Log.d(TAG, "Can't get weather info, not refresh view");
             return;
-        }
+        }*/
         DayForecast today = res.getPreFixedWeatherInfo(this.getApplicationContext(), days.get(0));
         
         mWidgetViews.setTextViewText(R.id.weather_source_view, getString(provider.getNameResourceId()));
-        mWidgetViews.setTextViewText(R.id.city_view, Preferences.getCityName(this));
+        Log.d(TAG, "city name is " + today.getCity());
+        
+        mWidgetViews.setTextViewText(R.id.city_view, today.getCity());
         mWidgetViews.setTextViewText(R.id.today_temp, today.getTemperature());
+        //Ugly code
         StringBuilder builder = new StringBuilder();
         builder.append(res.getWeek(today, this));
         builder.append(" ");
@@ -237,26 +262,20 @@ public class WeatherUpdateService extends Service {
         if (DBG) 
             Log.d(TAG, String.format("onStartCommand || Got intent => %s", intent.getAction()));
 
-        boolean active = mTask != null && mTask.getStatus() != AsyncTask.Status.FINISHED;
+        /*boolean active = mTask != null && mTask.getStatus() != AsyncTask.Status.FINISHED;
         
         if (active) {
             Log.d(TAG, "Weather update is still active, not starting new update");
             return START_REDELIVER_INTENT;
-        }
-        
-        /*boolean force = ACTION_FORCE_UPDATE.equals(intent.getAction());
-        if (!shouldUpdate(force)) {
-            Log.d(TAG, "Service started, but shouldn't update ... stopping");
-            //stopSelf();
-            sendCancelledBroadcast();
-            return START_NOT_STICKY;
         }*/
 
-        mTask = new WeatherUpdateTask();
-        mTask.execute();
+        //mTask = new WeatherUpdateTask();
+        //mTask.execute();
 
+        updateDateView();
+        updateWeatherView();
         //return START_REDELIVER_INTENT;
-        return super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
 
 
@@ -278,7 +297,7 @@ public class WeatherUpdateService extends Service {
     }
 
     private boolean shouldUpdate(boolean force) {
-        long interval = Preferences.getWeatherRefreshIntervalInMs(this);
+        long interval = Preferences.getWeatherRefreshIntervalInMs(this.getApplicationContext());
         if (interval == 0 && !force) {
             if (DBG) Log.v(TAG, "Interval set to manual and update not forced, skip update");
             return false;
@@ -301,7 +320,7 @@ public class WeatherUpdateService extends Service {
             PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
             this.mWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
             this.mWakeLock.setReferenceCounted(false);
-            this.mContext = WeatherUpdateService.this;
+            this.mContext = WeatherUpdateService.this.getApplicationContext();
         }
         
         @Override
@@ -312,17 +331,27 @@ public class WeatherUpdateService extends Service {
 
         @Override
         protected WeatherInfo doInBackground(Void... params) {
-            //WeatherProvider provider = mWeatherEngine.getWeatherProvider();
-            WeatherApplication app = (WeatherApplication)getApplication();
-            WeatherEngine engine = app.getWeatherEngine();
-            WeatherProvider provider = engine.getWeatherProvider();
-            WeatherInfo info = engine.getCache();//provider.getWeatherInfo();
+            WeatherEngine engine;
+            WeatherProvider provider;
+            WeatherInfo info = null;//provider.getWeatherInfo();
+            try {
+                //WeatherProvider provider = mWeatherEngine.getWeatherProvider();
+                WeatherApplication app = (WeatherApplication) getApplication();
+                engine = app.getWeatherEngine();
+                provider = engine.getWeatherProvider();
+                info = engine.getCache();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
             if (info != null) { // ensure we opened the app before add widget
                 //provider.refreshData();
                 LocationResult result = new LocationResult();
                 result.id = Preferences.getCityID(mContext);
                 result.city = Preferences.getCityName(mContext);//mTitleCityName.getText().toString();
                 result.country = Preferences.getCountryName(mContext);
+                if (DBG)
+                    Log.d(TAG, String.format("updateWeatherInfo , city id => %s, city name => %s, country => %s", result.id, result.city, result.country));
                 info = provider.getWeatherInfo(result.id, result.city, Preferences.isMetric(mContext));//getWeatherInfo();
                 if (info != null) { //refresh data succeed
                     engine.setToCache(info);
@@ -330,19 +359,6 @@ public class WeatherUpdateService extends Service {
                 }
             } 
             return null;
-
-
-            //Else we get weather info from saved city infomation
-            /*info = provider.getWeatherInfo(Preferences.getCityID(mContext),
-                    Preferences.getCityName(mContext), Preferences.isMetric(mContext));
-
-            if (info != null) {
-                //mWeatherEngine.setToCache(info);
-                engine.setToCache(info);
-                return info;
-            }*/
-            //return cached info
-            //return null;//mWeatherEngine.getCache();
         }
         
         @Override
@@ -371,9 +387,6 @@ public class WeatherUpdateService extends Service {
             
             if(DBG) Log.d(TAG, "Release wakelock");
             this.mWakeLock.release();
-            
-            //Do not stop the services
-            //stopSelf();
         }
     }
 }

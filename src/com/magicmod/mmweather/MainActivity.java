@@ -25,6 +25,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
+import com.magicmod.mmweather.config.PreferenceUI;
 import com.magicmod.mmweather.config.Preferences;
 import com.magicmod.mmweather.engine.WeatherEngine;
 import com.magicmod.mmweather.engine.WeatherInfo;
@@ -36,6 +37,7 @@ import com.magicmod.mmweather.utils.Constants;
 import com.magicmod.mmweather.utils.ImageUtils;
 import com.magicmod.mmweather.utils.widget.RotateImageView;
 import com.magicmod.mmweather.utils.widget.CirclePageIndicator;
+
 import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -228,6 +230,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
             case R.id.title_city_manager:
                 if (DBG)
                     Log.d(TAG, "click City manager");
+                showConfigView();
                 break;
             case R.id.title_location:
                 if (DBG)
@@ -258,6 +261,12 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         }
 
     }
+
+    private void showConfigView() {
+        Intent i = new Intent(this, PreferenceUI.class);
+        startActivity(i);        
+    }
+
     private void updateByGeoLocation() {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = lm.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
@@ -339,6 +348,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         result.id = Preferences.getCityID(mContext);
         result.city = Preferences.getCityName(mContext);//mTitleCityName.getText().toString();
         result.country = Preferences.getCountryName(mContext);
+        Log.d(TAG, String.format("updateWeatherInfo , city id => %s, city name => %s, country => %s", result.id, result.city, result.country));
+        
         new WeatherUpdateTask(result, Preferences.isMetric(mContext)).execute();
     }
     private void showShareMenu() {
@@ -530,8 +541,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener {
         protected void onPostExecute(WeatherInfo info) {
             super.onPostExecute(info);
             mUpdateProgressBar.stopAnim();
-            sendBroadcast(new Intent(WeatherUpdateService.ACTION_FORCE_UPDATE));
             updateWeatherView(info,true);
+            sendBroadcast(new Intent(WeatherUpdateService.ACTION_FORCE_UPDATE));
         }
     }
 
